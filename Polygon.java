@@ -5,6 +5,8 @@ class Polygon extends Deq implements Figure {
     private double s, p;
     private int counter = 0;
     private boolean b = true;
+    private boolean helpme = false;
+
     public Polygon(R2Point a, R2Point b, R2Point c) {
 
         pushFront(b);
@@ -56,6 +58,7 @@ class Polygon extends Deq implements Figure {
         }
         return counter;
     }
+
     public Figure add(R2Point t) {
         int i;
         //Ищем освещенные ребра, просматривая их одно за другим.
@@ -69,42 +72,45 @@ class Polygon extends Deq implements Figure {
             R2Point x;
             grow(back(), front(), t);
 
+            if (t.light(back(),front())){
+                if ((back().getX() >= 0 && front().getX() >= 0) && (back().getX() <= 3 && front().getX() <= 3) && (back().getY() >= 0 && front().getY() >= 0) && (back().getY() <= 3 && front().getY() <= 3)) {
+                    counter--;
+                    helpme = true;
+                }
+            }
             //Удаляем все освещенные ребра из начала дека.
             for (x = popFront(); t.light(x, front()); x = popFront()) {
-                System.out.println(x.getX()+" "+x.getY()+" "+front().getX()+" "+front().getY());
                 if ((x.getX() >= 0 && front().getX() >= 0) && (x.getX() <= 3 && front().getX() <= 3) && (x.getY() >= 0 && front().getY() >= 0) && (x.getY() <= 3 && front().getY() <= 3)) {
                     counter--;
                 }
                 if ((x.getX() >= 0 && back().getX() >= 0) && (x.getX() <= 3 && back().getX() <= 3) && (x.getY() >= 0 && back().getY() >= 0) && (x.getY() <= 3 && back().getY() <= 3)) {
                     counter--;
-                 }
+                }
+                if (helpme) counter++;
                 grow(x, front(), t);
             }
             pushFront(x);
 
             //Удаляем все освещенные ребра из конца дека.
             for (x = popBack(); t.light(back(), x); x = popBack()) {
-                System.out.println(x.getX()+" "+x.getY()+" "+back().getX()+" "+back().getY()+"из конца");
                 if ((x.getX() >= 0 && back().getX() >= 0) && (x.getX() <= 3 && back().getX() <= 3) && (x.getY() >= 0 && back().getY() >= 0) && (x.getY() <= 3 && back().getY() <= 3)) {
                     counter--;
                 }
                 if ((x.getX() >= 0 && front().getX() >= 0) && (x.getX() <= 3 && front().getX() <= 3) && (x.getY() >= 0 && front().getY() >= 0) && (x.getY() <= 3 && front().getY() <= 3)) {
                     counter--;
                 }
+                if (helpme) counter++;
                 grow(back(), x, t);
             }
             pushBack(x);
-
             //Завершаем обработку добавляемой точки.
             p += R2Point.dist(back(), t) + R2Point.dist(t, front());
-
-            if (t.getX()>=0 && t.getX()<=3 && t.getY()>=0 && t.getY()<=3){
-                if (front().getX()>=0 && front().getX()<=3 && front().getY()>=0 && front().getY()<=3) counter++;
-                if (back().getX()>=0 && back().getX()<=3 && back().getY()>=0 && back().getY()<=3) counter++;
+            if (t.getX() >= 0 && t.getX() <= 3 && t.getY() >= 0 && t.getY() <= 3) {
+                if (front().getX() >= 0 && front().getX() <= 3 && front().getY() >= 0 && front().getY() <= 3) counter++;
+                if (back().getX() >= 0 && back().getX() <= 3 && back().getY() >= 0 && back().getY() <= 3) counter++;
             }
             pushFront(t);
         }
-
         return this;
     }
 
