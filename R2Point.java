@@ -41,6 +41,7 @@ class R2Point{
     public boolean light(R2Point a, R2Point b){
         double s = area(a, b, this);
         return s < 0.0 || (s == 0.0 && ! inside(a,b));
+
     }
 
     public int getX() {
