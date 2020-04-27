@@ -4,8 +4,7 @@ import java.awt.*;
 class Polygon extends Deq implements Figure {
     private double s, p;
     private int counter = 0;
-    private boolean b = true;
-    private boolean helpme = false;
+    private boolean bool = true;
 
     public Polygon(R2Point a, R2Point b, R2Point c) {
 
@@ -19,27 +18,8 @@ class Polygon extends Deq implements Figure {
             pushBack(a);
         }
 
-        p = R2Point.dist(a, b) + R2Point.dist(b, c) + R2Point.dist(c, a);
-        s = Math.abs(R2Point.area(a, b, c));
-
-    }
-
-    public double perimeter() {
-        return p;
-    }
-
-    public double area() {
-        return s;
-    }
-
-    private void grow(R2Point a, R2Point b, R2Point t) {
-        p -= R2Point.dist(a, b);
-        s += Math.abs(R2Point.area(a, b, t));
-    }
-
-    public int count() {
-        if (b) {
-            b = false;
+        if (bool) {
+            bool = false;
             R2Point p_1 = popBack();
             R2Point p_2 = popBack();
             R2Point p_3 = popBack();
@@ -56,6 +36,24 @@ class Polygon extends Deq implements Figure {
             pushFront(p_2);
             pushFront(p_3);
         }
+        p = R2Point.dist(a, b) + R2Point.dist(b, c) + R2Point.dist(c, a);
+        s = Math.abs(R2Point.area(a, b, c));
+    }
+
+    public double perimeter() {
+        return p;
+    }
+
+    public double area() {
+        return s;
+    }
+
+    private void grow(R2Point a, R2Point b, R2Point t) {
+        p -= R2Point.dist(a, b);
+        s += Math.abs(R2Point.area(a, b, t));
+    }
+
+    public int count() {
         return counter;
     }
 
@@ -64,7 +62,6 @@ class Polygon extends Deq implements Figure {
         //Ищем освещенные ребра, просматривая их одно за другим.
         for (i = length(); i > 0 && !t.light(back(), front()); i--)
             pushBack(popFront());
-
         //УТВЕРЖДЕНИЕ:
         //либо ребро [back(), front()] освещено из t,
         //либо освещенных ребер нет совсем.
@@ -72,21 +69,14 @@ class Polygon extends Deq implements Figure {
             R2Point x;
             grow(back(), front(), t);
 
-            if (t.light(back(),front())){
-                if ((back().getX() >= 0 && front().getX() >= 0) && (back().getX() <= 3 && front().getX() <= 3) && (back().getY() >= 0 && front().getY() >= 0) && (back().getY() <= 3 && front().getY() <= 3)) {
-                    counter--;
-                    helpme = true;
-                }
+            if ((back().getX() >= 0 && front().getX() >= 0) && (back().getX() <= 3 && front().getX() <= 3) && (back().getY() >= 0 && front().getY() >= 0) && (back().getY() <= 3 && front().getY() <= 3)) {
+                counter--;
             }
-            //Удаляем все освещенные ребра из начала дека.
+//            //Удаляем все освещенные ребра из начала дека.
             for (x = popFront(); t.light(x, front()); x = popFront()) {
                 if ((x.getX() >= 0 && front().getX() >= 0) && (x.getX() <= 3 && front().getX() <= 3) && (x.getY() >= 0 && front().getY() >= 0) && (x.getY() <= 3 && front().getY() <= 3)) {
                     counter--;
                 }
-                if ((x.getX() >= 0 && back().getX() >= 0) && (x.getX() <= 3 && back().getX() <= 3) && (x.getY() >= 0 && back().getY() >= 0) && (x.getY() <= 3 && back().getY() <= 3)) {
-                    counter--;
-                }
-                if (helpme) counter++;
                 grow(x, front(), t);
             }
             pushFront(x);
@@ -96,15 +86,12 @@ class Polygon extends Deq implements Figure {
                 if ((x.getX() >= 0 && back().getX() >= 0) && (x.getX() <= 3 && back().getX() <= 3) && (x.getY() >= 0 && back().getY() >= 0) && (x.getY() <= 3 && back().getY() <= 3)) {
                     counter--;
                 }
-                if ((x.getX() >= 0 && front().getX() >= 0) && (x.getX() <= 3 && front().getX() <= 3) && (x.getY() >= 0 && front().getY() >= 0) && (x.getY() <= 3 && front().getY() <= 3)) {
-                    counter--;
-                }
-                if (helpme) counter++;
                 grow(back(), x, t);
             }
             pushBack(x);
             //Завершаем обработку добавляемой точки.
             p += R2Point.dist(back(), t) + R2Point.dist(t, front());
+
             if (t.getX() >= 0 && t.getX() <= 3 && t.getY() >= 0 && t.getY() <= 3) {
                 if (front().getX() >= 0 && front().getX() <= 3 && front().getY() >= 0 && front().getY() <= 3) counter++;
                 if (back().getX() >= 0 && back().getX() <= 3 && back().getY() >= 0 && back().getY() <= 3) counter++;

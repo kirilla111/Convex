@@ -1,8 +1,6 @@
 import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
+import static org.junit.Assert.assertEquals;
 //Задача — посчитать количество ребер выпуклой оболочки, целиком расположенных внутри квадрата (0;0) (0;3) (3;3) (3;0)
 public class ConvexTester {
     @Test
@@ -112,5 +110,53 @@ public class ConvexTester {
         } catch (Exception e) {
             fail();
         }
+    }
+    @Test
+    public void test_11() {
+        Convex c = new Convex();
+        try {
+            c.add(new R2Point(1, 1)); //создали многоугольник внутри квадрата, а затем удачили 3 ребра
+            c.add(new R2Point(1,2));
+            c.add(new R2Point(2, 2));
+            c.add(new R2Point(2.5, 1.5));
+            c.add(new R2Point(2.5, 1));
+            c.add(new R2Point(4, 4));
+            assertEquals(2, c.count());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_12() {
+        Convex c = new Convex();
+        try {
+            c.add(new R2Point(0, 0)); //создали триугольник внутри а затем продлили одно ребро до выхода из квадрата
+            c.add(new R2Point(1,0));
+            c.add(new R2Point(0, 1));
+            c.add(new R2Point(4, 0));
+            assertEquals(1, c.count());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+    @Test
+    public void test_13() {
+        Convex c = new Convex();
+        try {
+            c.add(new R2Point(0, 0));
+            c.add(new R2Point(0.5,1));
+            c.add(new R2Point(1, 2));
+            c.add(new R2Point(2, 3));
+            c.add(new R2Point(2.5, 2));
+            c.add(new R2Point(3, 1));
+            assertEquals(5, c.count());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    public void fail(){
+        System.out.println("fail");
     }
 }
